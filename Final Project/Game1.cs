@@ -17,6 +17,8 @@ namespace Final_Project
 
         Rectangle window;
 
+        Texture2D rectangleTexture;
+
         Texture2D blackTargetTexture;
 
         Texture2D greenTargetTexture;
@@ -29,6 +31,10 @@ namespace Final_Project
 
         Texture2D menuTexture;
         Texture2D backgroundTexture;
+
+        SpriteFont menuFont;
+
+        Screen screen;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -40,6 +46,12 @@ namespace Final_Project
         {
             // TODO: Add your initialization logic here
 
+            window = new Rectangle(0, 0, 800, 600);
+            _graphics.PreferredBackBufferWidth = window.Width;
+            _graphics.PreferredBackBufferHeight = window.Height;
+            _graphics.ApplyChanges();
+
+            screen = Screen.Menu;
             base.Initialize();
         }
 
@@ -48,6 +60,7 @@ namespace Final_Project
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            rectangleTexture = Content.Load<Texture2D>("rectangle");
             blackTargetTexture = Content.Load<Texture2D>("black-target");
             greenTargetTexture = Content.Load<Texture2D>("green-target");
             blueTargetTexture = Content.Load<Texture2D>("blue-target");
@@ -55,6 +68,7 @@ namespace Final_Project
             crosshairTexture = Content.Load<Texture2D>("crosshair");
             menuTexture = Content.Load<Texture2D>("menuBackground");
             backgroundTexture = Content.Load<Texture2D>("shooting-room");
+            menuFont = Content.Load<SpriteFont>("menu");
         }
 
         protected override void Update(GameTime gameTime)
@@ -72,7 +86,20 @@ namespace Final_Project
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            _spriteBatch.Begin();
 
+            if (screen == Screen.Menu)
+            {
+                _spriteBatch.Draw(menuTexture, window, Color.White);
+                // _spriteBatch.DrawString(introFont, "TRAFFIC JAM", new Vector2(265, 285), Color.Red);
+            }
+            else if (screen == Screen.Game)
+            {
+                _spriteBatch.Draw(backgroundTexture, window, Color.White);
+                // _spriteBatch.DrawString(introFont, "TRAFFIC JAM", new Vector2(265, 285), Color.Red);
+            }
+
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }
