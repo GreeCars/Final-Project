@@ -91,7 +91,12 @@ namespace Final_Project
             if (screen == Screen.Menu)
             {
                 _spriteBatch.Draw(menuTexture, window, Color.White);
-                // _spriteBatch.DrawString(introFont, "TRAFFIC JAM", new Vector2(265, 285), Color.Red);
+                _spriteBatch.Draw(rectangleTexture, new Rectangle(250, 300, 300, 40), Color.DarkBlue);
+                _spriteBatch.DrawString(menuFont, "PLAY", new Vector2(365, 305), Color.White);
+                _spriteBatch.Draw(rectangleTexture, new Rectangle(250, 360, 300, 40), Color.DarkBlue);
+                _spriteBatch.DrawString(menuFont, "INSTRUCTIONS", new Vector2(312, 365), Color.White);
+                _spriteBatch.Draw(rectangleTexture, new Rectangle(250, 420, 300, 40), Color.DarkBlue);
+                _spriteBatch.DrawString(menuFont, "QUIT", new Vector2(365, 425), Color.White);
             }
             else if (screen == Screen.Game)
             {
