@@ -18,6 +18,9 @@ namespace Final_Project
         Rectangle window;
 
         Texture2D rectangleTexture;
+        Rectangle buttonRect1;
+        Rectangle buttonRect2;
+        Rectangle buttonRect3;
 
         Texture2D blackTargetTexture;
 
@@ -34,6 +37,8 @@ namespace Final_Project
 
         SpriteFont menuFont;
 
+        MouseState mouseState;
+
         Screen screen;
         public Game1()
         {
@@ -45,6 +50,9 @@ namespace Final_Project
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            buttonRect1 = new Rectangle(250, 300, 300, 40);
+            buttonRect2 = new Rectangle(250, 360, 300, 40);
+            buttonRect3 = new Rectangle(250, 420, 300, 40);
 
             window = new Rectangle(0, 0, 800, 600);
             _graphics.PreferredBackBufferWidth = window.Width;
@@ -73,12 +81,17 @@ namespace Final_Project
 
         protected override void Update(GameTime gameTime)
         {
+            mouseState = Mouse.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             // TODO: Add your update logic here
-
-            base.Update(gameTime);
+            if (mouseState.LeftButton == ButtonState.Pressed)
+            {
+                if (buttonRect3.Contains(mouseState.Position))
+                    Exit();
+            }
+                base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -91,12 +104,23 @@ namespace Final_Project
             if (screen == Screen.Menu)
             {
                 _spriteBatch.Draw(menuTexture, window, Color.White);
-                _spriteBatch.Draw(rectangleTexture, new Rectangle(250, 300, 300, 40), Color.DarkBlue);
+                _spriteBatch.Draw(rectangleTexture, buttonRect1, Color.DarkBlue);
                 _spriteBatch.DrawString(menuFont, "PLAY", new Vector2(365, 305), Color.White);
-                _spriteBatch.Draw(rectangleTexture, new Rectangle(250, 360, 300, 40), Color.DarkBlue);
+                _spriteBatch.Draw(rectangleTexture, buttonRect2, Color.DarkBlue);
                 _spriteBatch.DrawString(menuFont, "INSTRUCTIONS", new Vector2(312, 365), Color.White);
-                _spriteBatch.Draw(rectangleTexture, new Rectangle(250, 420, 300, 40), Color.DarkBlue);
+                _spriteBatch.Draw(rectangleTexture, buttonRect3, Color.DarkBlue);
                 _spriteBatch.DrawString(menuFont, "QUIT", new Vector2(365, 425), Color.White);
+                else if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    if (buttonRect2.Contains(mouseState.Position))
+                    {
+                        _spriteBatch.DrawString(menuFont, "Shoot targets by clicking on them to gain points.", new Vector2(365, 305), Color.White);
+                        _spriteBatch.DrawString(menuFont, "Black = 1 point", new Vector2(365, 305), Color.White);
+                        _spriteBatch.DrawString(menuFont, "Green = 2 points", new Vector2(365, 305), Color.White);
+                        _spriteBatch.DrawString(menuFont, "Blue = 3 points", new Vector2(365, 305), Color.White);
+                        _spriteBatch.DrawString(menuFont, "Red = 4 points", new Vector2(365, 305), Color.White);
+                    }
+                }
             }
             else if (screen == Screen.Game)
             {
