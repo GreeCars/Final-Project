@@ -7,6 +7,7 @@ namespace Final_Project
     enum Screen
     {
         Menu,
+        Instructions,
         Game,
         End
     }
@@ -18,9 +19,10 @@ namespace Final_Project
         Rectangle window;
 
         Texture2D rectangleTexture;
-        Rectangle buttonRect1;
-        Rectangle buttonRect2;
-        Rectangle buttonRect3;
+        Rectangle playRect;
+        Rectangle instructRect;
+        Rectangle quitRect;
+        Rectangle backRect;
 
         Texture2D blackTargetTexture;
 
@@ -50,9 +52,10 @@ namespace Final_Project
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            buttonRect1 = new Rectangle(250, 300, 300, 40);
-            buttonRect2 = new Rectangle(250, 360, 300, 40);
-            buttonRect3 = new Rectangle(250, 420, 300, 40);
+            playRect = new Rectangle(250, 300, 300, 40);
+            instructRect = new Rectangle(250, 360, 300, 40);
+            quitRect = new Rectangle(250, 420, 300, 40);
+            backRect = new Rectangle(250, 555, 300, 40);
 
             window = new Rectangle(0, 0, 800, 600);
             _graphics.PreferredBackBufferWidth = window.Width;
@@ -85,12 +88,33 @@ namespace Final_Project
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-            if (mouseState.LeftButton == ButtonState.Pressed)
+            if (screen == Screen.Menu)
             {
-                if (buttonRect3.Contains(mouseState.Position))
-                    Exit();
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    if (instructRect.Contains(mouseState.Position))
+                    {
+                        screen = Screen.Instructions;
+                    }
+                    else if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        if (quitRect.Contains(mouseState.Position))
+                            Exit();
+                    }
+                }
             }
+            else if (screen == Screen.Instructions)
+            {
+                if (backRect.Contains(mouseState.Position))
+                    screen = Screen.Menu;
+            }
+        
+            else if(screen == Screen.Game)
+            {
+
+            }
+            // TODO: Add your update logic here
+            
                 base.Update(gameTime);
         }
 
@@ -104,23 +128,24 @@ namespace Final_Project
             if (screen == Screen.Menu)
             {
                 _spriteBatch.Draw(menuTexture, window, Color.White);
-                _spriteBatch.Draw(rectangleTexture, buttonRect1, Color.DarkBlue);
+                _spriteBatch.Draw(rectangleTexture, playRect, Color.DarkBlue);
                 _spriteBatch.DrawString(menuFont, "PLAY", new Vector2(365, 305), Color.White);
-                _spriteBatch.Draw(rectangleTexture, buttonRect2, Color.DarkBlue);
+                _spriteBatch.Draw(rectangleTexture, instructRect, Color.DarkBlue);
                 _spriteBatch.DrawString(menuFont, "INSTRUCTIONS", new Vector2(312, 365), Color.White);
-                _spriteBatch.Draw(rectangleTexture, buttonRect3, Color.DarkBlue);
+                _spriteBatch.Draw(rectangleTexture, quitRect, Color.DarkBlue);
                 _spriteBatch.DrawString(menuFont, "QUIT", new Vector2(365, 425), Color.White);
-                else if (mouseState.LeftButton == ButtonState.Pressed)
-                {
-                    if (buttonRect2.Contains(mouseState.Position))
-                    {
-                        _spriteBatch.DrawString(menuFont, "Shoot targets by clicking on them to gain points.", new Vector2(365, 305), Color.White);
-                        _spriteBatch.DrawString(menuFont, "Black = 1 point", new Vector2(365, 305), Color.White);
-                        _spriteBatch.DrawString(menuFont, "Green = 2 points", new Vector2(365, 305), Color.White);
-                        _spriteBatch.DrawString(menuFont, "Blue = 3 points", new Vector2(365, 305), Color.White);
-                        _spriteBatch.DrawString(menuFont, "Red = 4 points", new Vector2(365, 305), Color.White);
-                    }
-                }
+                
+            }
+            else if (screen == Screen.Instructions)
+            {
+                _spriteBatch.Draw(menuTexture, window, Color.White);
+                _spriteBatch.DrawString(menuFont, "Shoot targets by clicking on them to gain points.", new Vector2(175, 325), Color.DarkBlue);
+                _spriteBatch.DrawString(menuFont, "Black = 1 point", new Vector2(325, 365), Color.White);
+                _spriteBatch.DrawString(menuFont, "Green = 2 points", new Vector2(325, 405), Color.White);
+                _spriteBatch.DrawString(menuFont, "Blue = 3 points", new Vector2(325, 445), Color.White);
+                _spriteBatch.DrawString(menuFont, "Red = 4 points", new Vector2(325, 485), Color.White);
+                _spriteBatch.Draw(rectangleTexture, backRect, Color.DarkBlue);
+                _spriteBatch.DrawString(menuFont, "BACK", new Vector2(365, 560), Color.White);
             }
             else if (screen == Screen.Game)
             {
