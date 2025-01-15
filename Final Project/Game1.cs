@@ -24,6 +24,8 @@ namespace Final_Project
         Rectangle quitRect;
         Rectangle backRect;
 
+        Rectangle titleRect;
+
         Texture2D blackTargetTexture;
 
         Texture2D greenTargetTexture;
@@ -33,6 +35,7 @@ namespace Final_Project
         Texture2D redTargetTexture;
 
         Texture2D crosshairTexture;
+        Rectangle crosshairRect;
 
         Texture2D menuTexture;
         Texture2D backgroundTexture;
@@ -56,6 +59,8 @@ namespace Final_Project
             instructRect = new Rectangle(250, 360, 300, 40);
             quitRect = new Rectangle(250, 420, 300, 40);
             backRect = new Rectangle(250, 555, 300, 40);
+            titleRect = new Rectangle(200, 75, 388, 80);
+            crosshairRect = new Rectangle(0, 0, 50, 50);
 
             window = new Rectangle(0, 0, 800, 600);
             _graphics.PreferredBackBufferWidth = window.Width;
@@ -85,6 +90,7 @@ namespace Final_Project
         protected override void Update(GameTime gameTime)
         {
             mouseState = Mouse.GetState();
+            crosshairRect.Location = mouseState.Position;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -92,7 +98,11 @@ namespace Final_Project
             {
                 if (mouseState.LeftButton == ButtonState.Pressed)
                 {
-                    if (instructRect.Contains(mouseState.Position))
+                    if (playRect.Contains(mouseState.Position))
+                    {
+                        screen = Screen.Game;
+                    }
+                    else if (instructRect.Contains(mouseState.Position))
                     {
                         screen = Screen.Instructions;
                     }
@@ -105,13 +115,14 @@ namespace Final_Project
             }
             else if (screen == Screen.Instructions)
             {
-                if (backRect.Contains(mouseState.Position))
-                    screen = Screen.Menu;
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                    if (backRect.Contains(mouseState.Position))
+                        screen = Screen.Menu;
             }
         
             else if(screen == Screen.Game)
             {
-
+                IsMouseVisible = false;
             }
             // TODO: Add your update logic here
             
@@ -128,6 +139,9 @@ namespace Final_Project
             if (screen == Screen.Menu)
             {
                 _spriteBatch.Draw(menuTexture, window, Color.White);
+                _spriteBatch.Draw(rectangleTexture, titleRect, Color.Black);
+                _spriteBatch.DrawString(menuFont, "SHOOTING", new Vector2(330, 80), Color.Red);
+                _spriteBatch.DrawString(menuFont, "GALLERY", new Vector2(337, 120), Color.Red);
                 _spriteBatch.Draw(rectangleTexture, playRect, Color.DarkBlue);
                 _spriteBatch.DrawString(menuFont, "PLAY", new Vector2(365, 305), Color.White);
                 _spriteBatch.Draw(rectangleTexture, instructRect, Color.DarkBlue);
@@ -150,6 +164,7 @@ namespace Final_Project
             else if (screen == Screen.Game)
             {
                 _spriteBatch.Draw(backgroundTexture, window, Color.White);
+                _spriteBatch.Draw(crosshairTexture, crosshairRect, Color.Red);
                 // _spriteBatch.DrawString(introFont, "TRAFFIC JAM", new Vector2(265, 285), Color.Red);
             }
 
