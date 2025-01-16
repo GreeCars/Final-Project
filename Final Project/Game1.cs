@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -27,12 +28,20 @@ namespace Final_Project
         Rectangle titleRect;
 
         Texture2D blackTargetTexture;
+        Rectangle blackTargetRect;
+        Vector2 blackTargetSpeed;
 
         Texture2D greenTargetTexture;
+        Rectangle greenTargetRect;
+        Vector2 greenTargetSpeed;
 
         Texture2D blueTargetTexture;
+        Rectangle blueTargetRect;
+        Vector2 blueTargetSpeed;
 
         Texture2D redTargetTexture;
+        Rectangle redTargetRect;
+        Vector2 redTargetSpeed;
 
         Texture2D crosshairTexture;
         Rectangle crosshairRect;
@@ -42,7 +51,10 @@ namespace Final_Project
 
         SpriteFont menuFont;
 
+        SoundEffect gunshot;
+
         MouseState mouseState;
+        MouseState prevMouseState;
 
         Screen screen;
         public Game1()
@@ -61,6 +73,18 @@ namespace Final_Project
             backRect = new Rectangle(250, 555, 300, 40);
             titleRect = new Rectangle(200, 75, 388, 80);
             crosshairRect = new Rectangle(0, 0, 50, 50);
+
+            blackTargetRect = new Rectangle(300, 10, 100, 100);
+            blackTargetSpeed = new Vector2(2, 2);
+
+            greenTargetRect = new Rectangle(300, 10, 100, 100);
+            greenTargetSpeed = new Vector2(2, 2);
+
+            blueTargetRect = new Rectangle(300, 10, 100, 100);
+            blueTargetSpeed = new Vector2(2, 2);
+
+            redTargetRect = new Rectangle(300, 10, 100, 100);
+            redTargetSpeed = new Vector2(2, 2);
 
             window = new Rectangle(0, 0, 800, 600);
             _graphics.PreferredBackBufferWidth = window.Width;
@@ -85,10 +109,12 @@ namespace Final_Project
             menuTexture = Content.Load<Texture2D>("menuBackground");
             backgroundTexture = Content.Load<Texture2D>("shooting-room");
             menuFont = Content.Load<SpriteFont>("menu");
+            gunshot = Content.Load<SoundEffect>("gunshot");
         }
 
         protected override void Update(GameTime gameTime)
         {
+            prevMouseState = mouseState;
             mouseState = Mouse.GetState();
             crosshairRect.Location = mouseState.Position;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -123,6 +149,18 @@ namespace Final_Project
             else if(screen == Screen.Game)
             {
                 IsMouseVisible = false;
+                if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                    gunshot.Play();
+                blackTargetRect.X += (int)blackTargetSpeed.X;
+                if (blackTargetRect.Right > window.Width || blackTargetRect.Left < 0)
+                {
+                    blackTargetSpeed.X *= -1;
+                }
+                blackTargetRect.Y += (int)blackTargetSpeed.Y;
+                if (blackTargetRect.Right > window.Width || blackTargetRect.Left < 0)
+                {
+                    blackTargetSpeed.X *= -1;
+                }
             }
             // TODO: Add your update logic here
             

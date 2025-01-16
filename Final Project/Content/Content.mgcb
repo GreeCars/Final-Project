@@ -61,6 +61,12 @@
 /processorParam:TextureFormat=Color
 /build:green-target.png
 
+#begin gunshot.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:gunshot.mp3
+
 #begin menu.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
