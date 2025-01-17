@@ -19,6 +19,8 @@ namespace Final_Project
 
         Rectangle window;
 
+        int points;
+
         Texture2D rectangleTexture;
         Rectangle playRect;
         Rectangle instructRect;
@@ -50,6 +52,7 @@ namespace Final_Project
         Texture2D backgroundTexture;
 
         SpriteFont menuFont;
+        SpriteFont pointFont;
 
         SoundEffect gunshot;
 
@@ -67,6 +70,8 @@ namespace Final_Project
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            points = 0;
+
             playRect = new Rectangle(250, 300, 300, 40);
             instructRect = new Rectangle(250, 360, 300, 40);
             quitRect = new Rectangle(250, 420, 300, 40);
@@ -109,6 +114,7 @@ namespace Final_Project
             menuTexture = Content.Load<Texture2D>("menuBackground");
             backgroundTexture = Content.Load<Texture2D>("shooting-room");
             menuFont = Content.Load<SpriteFont>("menu");
+            pointFont = Content.Load<SpriteFont>("point");
             gunshot = Content.Load<SoundEffect>("gunshot");
         }
 
@@ -150,16 +156,26 @@ namespace Final_Project
             {
                 IsMouseVisible = false;
                 if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                {
                     gunshot.Play();
+                    if (blackTargetRect.Contains(mouseState.Position))
+                        points += 1;
+                    if (greenTargetRect.Contains(mouseState.Position))
+                        points += 2;
+                    if (blueTargetRect.Contains(mouseState.Position))
+                        points += 3;
+                    if (redTargetRect.Contains(mouseState.Position))
+                        points += 4;
+                }
                 blackTargetRect.X += (int)blackTargetSpeed.X;
                 if (blackTargetRect.Right > window.Width || blackTargetRect.Left < 0)
                 {
                     blackTargetSpeed.X *= -1;
                 }
-                blackTargetRect.Y += (int)blackTargetSpeed.Y;
-                if (blackTargetRect.Right > window.Width || blackTargetRect.Left < 0)
+                greenTargetRect.Y += (int)greenTargetSpeed.Y;
+                if (greenTargetRect.Bottom > window.Height || greenTargetRect.Top < 0)
                 {
-                    blackTargetSpeed.X *= -1;
+                    greenTargetSpeed.Y *= -1;
                 }
             }
             // TODO: Add your update logic here
@@ -203,6 +219,7 @@ namespace Final_Project
             {
                 _spriteBatch.Draw(backgroundTexture, window, Color.White);
                 _spriteBatch.Draw(crosshairTexture, crosshairRect, Color.Red);
+                _spriteBatch.DrawString(pointFont, "POINTS: " + points, new Vector2(337, 260), Color.Black);
                 // _spriteBatch.DrawString(introFont, "TRAFFIC JAM", new Vector2(265, 285), Color.Red);
             }
 
