@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Final_Project
 {
@@ -19,7 +20,9 @@ namespace Final_Project
 
         Rectangle window;
 
-        int points;
+        Random generator = new Random();
+
+        int points, randX, randY;
 
         Texture2D rectangleTexture;
         Rectangle playRect;
@@ -59,6 +62,9 @@ namespace Final_Project
         MouseState mouseState;
         MouseState prevMouseState;
 
+        float seconds;
+        bool timeUp;
+
         Screen screen;
         public Game1()
         {
@@ -71,6 +77,8 @@ namespace Final_Project
         {
             // TODO: Add your initialization logic here
             points = 0;
+            randX = generator.Next(0, 701);
+            randY = generator.Next(0, 451);
 
             playRect = new Rectangle(250, 300, 300, 40);
             instructRect = new Rectangle(250, 360, 300, 40);
@@ -79,22 +87,25 @@ namespace Final_Project
             titleRect = new Rectangle(200, 75, 388, 80);
             crosshairRect = new Rectangle(0, 0, 50, 50);
 
-            blackTargetRect = new Rectangle(300, 10, 100, 100);
-            blackTargetSpeed = new Vector2(2, 2);
+            blackTargetRect = new Rectangle(100, randY, 100, 150);
+            blackTargetSpeed = new Vector2(3, 3);
 
-            greenTargetRect = new Rectangle(300, 10, 100, 100);
-            greenTargetSpeed = new Vector2(2, 2);
+            greenTargetRect = new Rectangle(randX, 10, 100, 150);
+            greenTargetSpeed = new Vector2(4, 4);
 
-            blueTargetRect = new Rectangle(300, 10, 100, 100);
-            blueTargetSpeed = new Vector2(2, 2);
+            blueTargetRect = new Rectangle(700, randY, 100, 150);
+            blueTargetSpeed = new Vector2(-5, 5);
 
-            redTargetRect = new Rectangle(300, 10, 100, 100);
-            redTargetSpeed = new Vector2(2, 2);
+            redTargetRect = new Rectangle(randX, 450, 100, 150);
+            redTargetSpeed = new Vector2(6, -6);
 
             window = new Rectangle(0, 0, 800, 600);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
+
+            seconds = 0f;
+            timeUp = false;
 
             screen = Screen.Menu;
             base.Initialize();
@@ -159,23 +170,58 @@ namespace Final_Project
                 {
                     gunshot.Play();
                     if (blackTargetRect.Contains(mouseState.Position))
+                    {
                         points += 1;
+                    }
                     if (greenTargetRect.Contains(mouseState.Position))
+                    {
                         points += 2;
+                    }
                     if (blueTargetRect.Contains(mouseState.Position))
+                    {
                         points += 3;
+                    }
                     if (redTargetRect.Contains(mouseState.Position))
+                    {
                         points += 4;
+                    }
+                    if (seconds > 30)
+                    {
+                        seconds = 0f;
+                        timeUp = true;
+                    }
                 }
                 blackTargetRect.X += (int)blackTargetSpeed.X;
-                if (blackTargetRect.Right > window.Width || blackTargetRect.Left < 0)
+                if (blackTargetRect.Right > window.Width)
                 {
                     blackTargetSpeed.X *= -1;
                 }
                 greenTargetRect.Y += (int)greenTargetSpeed.Y;
-                if (greenTargetRect.Bottom > window.Height || greenTargetRect.Top < 0)
+                if (greenTargetRect.Bottom > window.Height)
                 {
                     greenTargetSpeed.Y *= -1;
+                }
+                blueTargetRect.X += (int)blueTargetSpeed.X;
+                if (blueTargetRect.Left < 0)
+                {
+                    blueTargetSpeed.X *= -1;
+                }
+                blueTargetRect.Y += (int)blueTargetSpeed.Y;
+                if (blueTargetRect.Bottom > window.Height)
+                {
+                    blueTargetSpeed.Y *= -1;
+                }
+                redTargetRect.X += (int)redTargetSpeed.X;
+                if (redTargetRect.Right > window.Width)
+                {
+                    redTargetSpeed.X *= -1;
+                    redTargetSpeed.Y *= -1;
+                }
+                redTargetRect.Y += (int)redTargetSpeed.Y;
+                if (redTargetRect.Top < 0)
+                {
+                    redTargetSpeed.X *= -1;
+                    redTargetSpeed.Y *= -1;
                 }
             }
             // TODO: Add your update logic here
@@ -219,6 +265,10 @@ namespace Final_Project
             {
                 _spriteBatch.Draw(backgroundTexture, window, Color.White);
                 _spriteBatch.Draw(crosshairTexture, crosshairRect, Color.Red);
+                _spriteBatch.Draw(blackTargetTexture, blackTargetRect, Color.White);
+                _spriteBatch.Draw(greenTargetTexture, greenTargetRect, Color.White);
+                _spriteBatch.Draw(blueTargetTexture, blueTargetRect, Color.White);
+                _spriteBatch.Draw(redTargetTexture, redTargetRect, Color.White);
                 _spriteBatch.DrawString(pointFont, "POINTS: " + points, new Vector2(337, 260), Color.Black);
                 // _spriteBatch.DrawString(introFont, "TRAFFIC JAM", new Vector2(265, 285), Color.Red);
             }
