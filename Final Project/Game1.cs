@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Threading;
 
 namespace Final_Project
 {
@@ -97,7 +98,7 @@ namespace Final_Project
             blueTargetSpeed = new Vector2(-5, 5);
 
             redTargetRect = new Rectangle(randX, 450, 100, 150);
-            redTargetSpeed = new Vector2(6, -6);
+            redTargetSpeed = new Vector2(10, -10);
 
             window = new Rectangle(0, 0, 800, 600);
             _graphics.PreferredBackBufferWidth = window.Width;
@@ -166,24 +167,37 @@ namespace Final_Project
             else if(screen == Screen.Game)
             {
                 IsMouseVisible = false;
+                seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
                 {
                     gunshot.Play();
                     if (blackTargetRect.Contains(mouseState.Position))
                     {
                         points += 1;
+                        randY = generator.Next(0, 451);
+                        blackTargetRect = new Rectangle(100, randY, 100, 150);
+                        blackTargetSpeed = new Vector2(3, 3);
                     }
                     if (greenTargetRect.Contains(mouseState.Position))
                     {
                         points += 2;
+                        randX = generator.Next(0, 701);
+                        greenTargetRect = new Rectangle(randX, 10, 100, 150);
+                        greenTargetSpeed = new Vector2(4, 4);
                     }
                     if (blueTargetRect.Contains(mouseState.Position))
                     {
                         points += 3;
+                        randY = generator.Next(0, 451);
+                        blueTargetRect = new Rectangle(700, randY, 100, 150);
+                        blueTargetSpeed = new Vector2(-5, 5);
                     }
                     if (redTargetRect.Contains(mouseState.Position))
                     {
                         points += 4;
+                        randX = generator.Next(0, 701);
+                        redTargetRect = new Rectangle(randX, 450, 100, 150);
+                        redTargetSpeed = new Vector2(10, -10);
                     }
                     if (seconds > 30)
                     {
@@ -191,6 +205,31 @@ namespace Final_Project
                         timeUp = true;
                     }
                 }
+                if (blackTargetRect.Left < 0)
+                {
+                    randY = generator.Next(0, 451);
+                    blackTargetRect = new Rectangle(100, randY, 100, 150);
+                    blackTargetSpeed = new Vector2(3, 3);
+                }
+                if (greenTargetRect.Top < 0)
+                {
+                    randX = generator.Next(0, 701);
+                    greenTargetRect = new Rectangle(randX, 10, 100, 150);
+                    greenTargetSpeed = new Vector2(4, 4);
+                }
+                if (blueTargetRect.Right > window.Width || blueTargetRect.Top < 0)
+                {
+                    randY = generator.Next(0, 451);
+                    blueTargetRect = new Rectangle(700, randY, 100, 150);
+                    blueTargetSpeed = new Vector2(-5, 5);
+                }
+                if (redTargetRect.Left < 0 || redTargetRect.Bottom > window.Height)
+                {
+                    randX = generator.Next(0, 701);
+                    redTargetRect = new Rectangle(randX, 450, 100, 150);
+                    redTargetSpeed = new Vector2(10, -10);
+                }
+
                 blackTargetRect.X += (int)blackTargetSpeed.X;
                 if (blackTargetRect.Right > window.Width)
                 {
@@ -215,14 +254,14 @@ namespace Final_Project
                 if (redTargetRect.Right > window.Width)
                 {
                     redTargetSpeed.X *= -1;
-                    redTargetSpeed.Y *= -1;
                 }
                 redTargetRect.Y += (int)redTargetSpeed.Y;
                 if (redTargetRect.Top < 0)
                 {
-                    redTargetSpeed.X *= -1;
                     redTargetSpeed.Y *= -1;
                 }
+                if (seconds > 30)
+                    screen = Screen.End;
             }
             // TODO: Add your update logic here
             
@@ -264,12 +303,13 @@ namespace Final_Project
             else if (screen == Screen.Game)
             {
                 _spriteBatch.Draw(backgroundTexture, window, Color.White);
-                _spriteBatch.Draw(crosshairTexture, crosshairRect, Color.Red);
-                _spriteBatch.Draw(blackTargetTexture, blackTargetRect, Color.White);
-                _spriteBatch.Draw(greenTargetTexture, greenTargetRect, Color.White);
-                _spriteBatch.Draw(blueTargetTexture, blueTargetRect, Color.White);
                 _spriteBatch.Draw(redTargetTexture, redTargetRect, Color.White);
+                _spriteBatch.Draw(blueTargetTexture, blueTargetRect, Color.White);
+                _spriteBatch.Draw(greenTargetTexture, greenTargetRect, Color.White);
+                _spriteBatch.Draw(blackTargetTexture, blackTargetRect, Color.White);
                 _spriteBatch.DrawString(pointFont, "POINTS: " + points, new Vector2(337, 260), Color.Black);
+                _spriteBatch.DrawString(pointFont, (30 - seconds).ToString("00.0"), new Vector2(380, 300), Color.Black);
+                _spriteBatch.Draw(crosshairTexture, crosshairRect, Color.Red);
                 // _spriteBatch.DrawString(introFont, "TRAFFIC JAM", new Vector2(265, 285), Color.Red);
             }
 
