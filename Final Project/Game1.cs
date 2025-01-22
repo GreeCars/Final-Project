@@ -163,8 +163,8 @@ namespace Final_Project
                     if (backRect.Contains(mouseState.Position))
                         screen = Screen.Menu;
             }
-        
-            else if(screen == Screen.Game)
+
+            else if (screen == Screen.Game)
             {
                 IsMouseVisible = false;
                 seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -260,11 +260,15 @@ namespace Final_Project
                 {
                     redTargetSpeed.Y *= -1;
                 }
-                if (seconds > 30)
+                if (seconds > 15)
                     screen = Screen.End;
             }
-            // TODO: Add your update logic here
-            
+            else if (screen == Screen.Game)
+            {
+                IsMouseVisible = true;
+            }
+                // TODO: Add your update logic here
+
                 base.Update(gameTime);
         }
 
@@ -287,7 +291,7 @@ namespace Final_Project
                 _spriteBatch.DrawString(menuFont, "INSTRUCTIONS", new Vector2(312, 365), Color.White);
                 _spriteBatch.Draw(rectangleTexture, quitRect, Color.DarkBlue);
                 _spriteBatch.DrawString(menuFont, "QUIT", new Vector2(365, 425), Color.White);
-                
+
             }
             else if (screen == Screen.Instructions)
             {
@@ -308,12 +312,27 @@ namespace Final_Project
                 _spriteBatch.Draw(greenTargetTexture, greenTargetRect, Color.White);
                 _spriteBatch.Draw(blackTargetTexture, blackTargetRect, Color.White);
                 _spriteBatch.DrawString(pointFont, "POINTS: " + points, new Vector2(337, 260), Color.Black);
-                _spriteBatch.DrawString(pointFont, (30 - seconds).ToString("00.0"), new Vector2(380, 300), Color.Black);
+                _spriteBatch.DrawString(pointFont, (15 - seconds).ToString("00.0"), new Vector2(380, 300), Color.Black);
                 _spriteBatch.Draw(crosshairTexture, crosshairRect, Color.Red);
-                // _spriteBatch.DrawString(introFont, "TRAFFIC JAM", new Vector2(265, 285), Color.Red);
+            }
+            else if (screen == Screen.End)
+            {
+                _spriteBatch.DrawString(pointFont, "Time's Up!", new Vector2(337, 60), Color.Black);
+                if (points > 29)
+                    _spriteBatch.DrawString(pointFont, "Absolute perfection!", new Vector2(277, 260), Color.Black);
+                else if (points > 19)
+                {
+                    _spriteBatch.DrawString(pointFont, "Great job, but you haven't reached your limit", new Vector2(5, 260), Color.Black);
+                    _spriteBatch.DrawString(pointFont, "yet!", new Vector2(363, 300), Color.Black);
+                }
+                else if (points > 9)
+                    _spriteBatch.DrawString(pointFont, "Not bad, keep trying!", new Vector2(267, 260), Color.Black);
+                else if (points > -1)
+                    _spriteBatch.DrawString(pointFont, "Ah well, better luck next time!", new Vector2(207, 260), Color.Black);
             }
 
             _spriteBatch.End();
+
             base.Draw(gameTime);
         }
     }
